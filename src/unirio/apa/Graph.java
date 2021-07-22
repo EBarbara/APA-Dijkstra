@@ -6,10 +6,23 @@ public class Graph {
         Integer weight;
         Node next;
 
-        public Node(int destNode, int weight) {
+        public Node(Integer destNode, Integer weight) {
             this.destNode = destNode;
             this.weight = weight;
             next = null;
+        }
+
+        public Node(){
+            this(null, null);
+        }
+
+        public String toString(){
+            String data =  " > " + destNode + " (" + weight + ")";
+            if (next != null){
+                return data + next.toString();
+            }else{
+                return data;
+            }
         }
     }
 
@@ -25,7 +38,6 @@ public class Graph {
 
     public void addAdjacency(int node, int destNode, int weight) {
         Node newNode = new Node(destNode, weight);
-
         if (nodeLists[node] == null){
             nodeLists[node] = newNode;
         }else{
@@ -37,15 +49,17 @@ public class Graph {
         }
     }
 
+    public void addNode(int node) {
+        Node newNode = new Node();
+        if (nodeLists[node] == null) {
+            nodeLists[node] = newNode;
+        }
+    }
+
     public void printAdjacencyList(){
         for(int i = 0; i < numNodes; i++){
-            StringBuilder data = new StringBuilder(Integer.toString(i));
             Node node = nodeLists[i];
-            while (node.next != null){
-                data.append(" > " + node.destNode + " (" + node.weight + ")" );
-                node = node.next;
-            }
-            System.out.println(data);
+            System.out.println(Integer.toString(i) + node);
         }
     }
 

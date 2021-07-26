@@ -7,9 +7,6 @@ import java.io.FileReader;
 import java.io.IOException;
 
 public class FileManager {
-    private static final String NB_NODES = "NB_NODES";
-    private static final String NB_ARCS = "NB_ARCS";
-
     public static Graph loadTestFile(String filename){
         Graph graph = null;
         Integer numNodes = -1;

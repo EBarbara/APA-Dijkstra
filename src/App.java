@@ -19,10 +19,10 @@ public class App {
     private static final String MAIN_EXT = ".stp";
 
     public static void main(String[] args) {
-        // Checks if is a test
+        // Verifica se é um teste
         boolean testRun = Arrays.asList(args).contains(TEST);
 
-        // List all files in INPUT folder
+        // Lista todos os arquivos na pasta INPUT
         try(Stream<Path> walk = Files.walk(Paths.get(INPUT))){
             List<String> files = walk.filter(Files::isRegularFile)
                     .map(Path::toString).collect(Collectors.toList());
@@ -49,11 +49,12 @@ public class App {
         }else if(filePath.contains(MAIN_EXT)) {
             graph = FileManager.loadMainFile(filePath);
         }else{
-            System.out.println("File type unrecognized");
+            System.out.println("Tipo de arquivo não reconhecido");
             return;
         }
         if(Objects.nonNull(graph)){
-            graph.printAdjacencyList();
+            //graph.printAdjacencyList();
+            graph.printMinimalPathsBasic();
         }
     }
 }

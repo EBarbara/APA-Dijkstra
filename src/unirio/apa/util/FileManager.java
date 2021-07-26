@@ -9,14 +9,12 @@ import java.io.IOException;
 public class FileManager {
     public static Graph loadTestFile(String filename){
         Graph graph = null;
-        Integer numNodes = -1;
-        Integer numEdges = -1;
 
         try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
             //Numero de nós na linha 0
-            numNodes = Integer.valueOf(reader.readLine().split("\\s+")[1]);
+            int numNodes = Integer.parseInt(reader.readLine().split("\\s+")[1]);
             //Numero de arestas na linha 1
-            numEdges = Integer.valueOf(reader.readLine().split("\\s+")[1]);
+            int numEdges = Integer.parseInt(reader.readLine().split("\\s+")[1]);
 
             //Inicializa o grafo
             graph = new Graph(numNodes, numEdges);
@@ -26,9 +24,9 @@ public class FileManager {
             //Arestas nas linhas 4 a numEdges
             for(int i = 0; i < numEdges; i++){
                 String[] tokens = reader.readLine().split("\\s+");
-                Integer nodeStart = Integer.valueOf(tokens[0]);
-                Integer nodeEnd = Integer.valueOf(tokens[1]);
-                Integer weight = Integer.valueOf(tokens[2]);
+                int nodeStart = Integer.parseInt(tokens[0]);
+                int nodeEnd = Integer.parseInt(tokens[1]);
+                int weight = Integer.parseInt(tokens[2]);
                 graph.addAdjacency(nodeStart, nodeEnd, weight);
             }
         } catch (IOException e) {
@@ -39,8 +37,6 @@ public class FileManager {
 
     public static Graph loadMainFile(String filename){
         Graph graph = null;
-        Integer numNodes = -1;
-        Integer numEdges = -1;
 
         try(BufferedReader reader = new BufferedReader(new FileReader(filename))){
             //Lixo nas linhas 1-8
@@ -49,20 +45,20 @@ public class FileManager {
             }
 
             //Numero de nós na linha 9
-            numNodes = Integer.valueOf(reader.readLine().split("\\s+")[1]) + 1;
+            int numNodes = Integer.parseInt(reader.readLine().split("\\s+")[1]) + 1;
             //Numero de arestas na linha 10
-            numEdges = Integer.valueOf(reader.readLine().split("\\s+")[1]);
+            int numEdges = Integer.parseInt(reader.readLine().split("\\s+")[1]);
 
             //Inicializa o grafo e carrega um nó fantasma na posição 0
-            graph = new Graph(numNodes, numEdges);
+            graph = new Graph(numNodes, numEdges, true);
             graph.addNode(0);
 
             //Arestas nas linhas 11 a numEdges
             for(int i = 0; i < numEdges; i++){
                 String[] tokens = reader.readLine().split("\\s+");
-                Integer nodeA = Integer.valueOf(tokens[1]);
-                Integer nodeB = Integer.valueOf(tokens[2]);
-                Integer weight = Integer.valueOf(tokens[3]);
+                int nodeA = Integer.parseInt(tokens[1]);
+                int nodeB = Integer.parseInt(tokens[2]);
+                int weight = Integer.parseInt(tokens[3]);
                 graph.addAdjacency(nodeA, nodeB, weight);
                 graph.addAdjacency(nodeB, nodeA, weight);
 

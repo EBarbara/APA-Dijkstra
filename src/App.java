@@ -19,6 +19,8 @@ public class App {
     private static final String MAIN_EXT = ".stp";
 
     public static void main(String[] args) {
+        System.out.println("File,Nodes,Basic,Heap");
+
         // Verifica se é um teste
         boolean testRun = Arrays.asList(args).contains(TEST);
 
@@ -32,12 +34,35 @@ public class App {
                         continue;
                     }
                 }
-                demoDijkstra(filePath);
-                System.out.println("--------------------------------------------------------------");
+                //demoDijkstra(filePath);
+                runDijkstra(filePath);
             }
         }catch(IOException e){
             e.printStackTrace();
         }
+    }
+
+    private static void runDijkstra(String filePath){
+        Graph graph;
+        long basicTime = -1;
+        long heapTime = -1;
+        int nodes = -1;
+
+        if(filePath.contains(TEST_EXT)){
+            graph = FileManager.loadTestFile(filePath);
+        }else if(filePath.contains(MAIN_EXT)) {
+            graph = FileManager.loadMainFile(filePath);
+        }else{
+            System.out.println("Tipo de arquivo não reconhecido");
+            return;
+        }
+        if(Objects.nonNull(graph)){
+            basicTime = graph.getElapsedBasic();
+            heapTime = graph.getElapsedHeap();
+            nodes = graph.getNumNodes();
+        }
+        String filename = filePath.substring(filePath.lastIndexOf("\\")+1);
+        System.out.println(filename + "," + nodes + "," + basicTime + "," + heapTime);
     }
 
     private static void demoDijkstra(String filePath){

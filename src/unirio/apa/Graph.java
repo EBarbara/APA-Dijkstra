@@ -2,6 +2,9 @@ package unirio.apa;
 
 import unirio.apa.MinHeap.NodeHeap;
 
+import java.time.Duration;
+import java.time.Instant;
+
 public class Graph {
     class Node {
         Integer destNode;
@@ -27,6 +30,10 @@ public class Graph {
     private final int numNodes;
     private final int numEdges;
     private final Node[] nodeLists;
+
+    public int getNumNodes() {
+        return numNodes;
+    }
 
     private static boolean hasFalse(boolean[] array){
         for(boolean b : array) if(!b) return true;
@@ -103,6 +110,7 @@ public class Graph {
     }
 
     public Integer[] minimalPathsHeap(){
+
         // Inicializações
         final int STARTER_NODE = 0;
         Integer[] paths = new Integer[numNodes];
@@ -150,5 +158,19 @@ public class Graph {
         for(int i = 0; i < numNodes; i++){
             System.out.println("d[" + i + "] = " + paths[i]);
         }
+    }
+
+    public long getElapsedBasic() {
+        Instant start = Instant.now();
+        minimalPathsBasic();
+        Instant finish = Instant.now();
+        return Duration.between(start, finish).toNanos();
+    }
+
+    public long getElapsedHeap() {
+        Instant start = Instant.now();
+        minimalPathsHeap();
+        Instant finish = Instant.now();
+        return Duration.between(start, finish).toNanos();
     }
 }

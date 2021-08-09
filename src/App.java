@@ -32,7 +32,7 @@ public class App {
                         continue;
                     }
                 }
-                runDijkstra(filePath);
+                demoDijkstra(filePath);
                 System.out.println("--------------------------------------------------------------");
             }
         }catch(IOException e){
@@ -40,7 +40,7 @@ public class App {
         }
     }
 
-    private static void runDijkstra(String filePath){
+    private static void demoDijkstra(String filePath){
         System.out.println(filePath);
         Graph graph;
 
@@ -53,7 +53,7 @@ public class App {
             return;
         }
         if(Objects.nonNull(graph)){
-            //graph.printAdjacencyList();
+            graph.printAdjacencyList();
             graph.printMinimalPathsBasic();
         }
     }

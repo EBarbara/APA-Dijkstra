@@ -1,7 +1,5 @@
 package unirio.apa;
 
-import java.util.Arrays;
-
 public class Graph {
     class Node {
         Integer destNode;
@@ -12,10 +10,6 @@ public class Graph {
             this.destNode = destNode;
             this.weight = weight;
             next = null;
-        }
-
-        public Node(){
-            this(null, null);
         }
 
         public String toString(){
@@ -30,7 +24,6 @@ public class Graph {
 
     private final int numNodes;
     private final int numEdges;
-    private final boolean ghostNode;
     private final Node[] nodeLists;
 
     private static boolean hasFalse(boolean[] array){
@@ -38,15 +31,10 @@ public class Graph {
         return false;
     }
 
-    public Graph(int numNodes, int numEdges, boolean ghostNode){
+    public Graph(int numNodes, int numEdges){
         this.numNodes = numNodes;
         this.numEdges = numEdges;
-        this.ghostNode = ghostNode;
         nodeLists = new Node[numNodes];
-    }
-
-    public Graph(int numNodes, int numEdges){
-        this(numNodes, numEdges, false);
     }
 
     public void addAdjacency(int node, int destNode, int weight) {
@@ -62,17 +50,8 @@ public class Graph {
         }
     }
 
-    public void addNode(int node) {
-        Node newNode = new Node();
-        if (nodeLists[node] == null) {
-            nodeLists[node] = newNode;
-        }
-    }
-
     public void printAdjacencyList(){
         for(int i = 0; i < numNodes; i++){
-            if(ghostNode && i == 0)
-                continue;
             Node node = nodeLists[i];
             System.out.println(Integer.toString(i) + node);
         }
@@ -84,11 +63,6 @@ public class Graph {
         Integer[] paths = new Integer[numNodes];
         boolean[] explored = new boolean[numNodes];
         int starterNode = 0;
-        if(ghostNode) {
-            starterNode = 1;
-            paths[0] = null;
-            explored[0] = true;
-        }
         for(int i = starterNode; i < numNodes; i++) {
             paths[i] = HIGH_VALUE;
             explored[i] = false;
@@ -129,13 +103,11 @@ public class Graph {
     public void printMinimalPathsBasic() {
         Integer[] paths = minimalPathsBasic();
         for(int i = 0; i < numNodes; i++){
-            if(ghostNode && i == 0)
-                continue;
             System.out.println("d[" + i + "] = " + paths[i]);
         }
     }
 
-    // TODO Desconsiderar nó fantasma
+    // TODO HEAP Binário
     public Integer[] minimalPathsHeap(int starterNode){
         return null;
     }

@@ -45,19 +45,18 @@ public class FileManager {
             }
 
             //Numero de nós na linha 9
-            int numNodes = Integer.parseInt(reader.readLine().split("\\s+")[1]) + 1;
+            int numNodes = Integer.parseInt(reader.readLine().split("\\s+")[1]);
             //Numero de arestas na linha 10
             int numEdges = Integer.parseInt(reader.readLine().split("\\s+")[1]);
 
-            //Inicializa o grafo e carrega um nó fantasma na posição 0
-            graph = new Graph(numNodes, numEdges, true);
-            graph.addNode(0);
+            //Inicializa o grafo
+            graph = new Graph(numNodes, numEdges);
 
             //Arestas nas linhas 11 a numEdges
             for(int i = 0; i < numEdges; i++){
                 String[] tokens = reader.readLine().split("\\s+");
-                int nodeA = Integer.parseInt(tokens[1]);
-                int nodeB = Integer.parseInt(tokens[2]);
+                int nodeA = Integer.parseInt(tokens[1]) - 1;
+                int nodeB = Integer.parseInt(tokens[2]) - 1;
                 int weight = Integer.parseInt(tokens[3]);
                 graph.addAdjacency(nodeA, nodeB, weight);
                 graph.addAdjacency(nodeB, nodeA, weight);

@@ -1,5 +1,7 @@
 package unirio.apa;
 
+import unirio.apa.MinHeap.NodeHeap;
+
 public class Graph {
     class Node {
         Integer destNode;
@@ -59,24 +61,24 @@ public class Graph {
 
     public Integer[] minimalPathsBasic(){
         // Inicializações
-        final int HIGH_VALUE = 99999;
+        final int STARTER_NODE = 0;
+
         Integer[] paths = new Integer[numNodes];
         boolean[] explored = new boolean[numNodes];
-        int starterNode = 0;
-        for(int i = starterNode; i < numNodes; i++) {
-            paths[i] = HIGH_VALUE;
+        for(int i = STARTER_NODE; i < numNodes; i++) {
+            paths[i] = Integer.MAX_VALUE;
             explored[i] = false;
         }
 
         // Iniciamos com o nó inicial
-        paths[starterNode] = 0;
-        explored[starterNode] = true;
+        paths[STARTER_NODE] = 0;
+        explored[STARTER_NODE] = true;
 
         // Enquanto houver nós não explorados
         while(hasFalse(explored)){
-            int minDist = HIGH_VALUE;
+            int minDist = Integer.MAX_VALUE;
             int nextNode = -1;
-            for(int i = starterNode; i < numNodes; i++){
+            for(int i = STARTER_NODE; i < numNodes; i++){
                 if(explored[i]){
                     Node node = nodeLists[i];
                     while(node != null){
@@ -92,11 +94,47 @@ public class Graph {
                     }
                 }
             }
-            if(minDist == HIGH_VALUE) break;
+            if(minDist == Integer.MAX_VALUE) break;
             // Se não chegou a nenhum nó novo, os outros são inacessíveis
             paths[nextNode] = minDist;
             explored[nextNode] = true;
         }
+        return paths;
+    }
+
+    public Integer[] minimalPathsHeap(){
+        // Inicializações
+        final int STARTER_NODE = 0;
+        Integer[] paths = new Integer[numNodes];
+
+        MinHeap minHeap = new MinHeap(numNodes);
+        minHeap.insert(STARTER_NODE, 0);
+        for (int i = 1; i < numNodes; i++){
+            minHeap.insert(i, Integer.MAX_VALUE);
+        }
+
+        while(!minHeap.isEmpty()){
+            NodeHeap minNode = minHeap.remove();
+            int nodePath = minNode.pathWeight;
+            paths[minNode.node] = nodePath;
+
+            Node node = nodeLists[minNode.node];
+
+            while(node != null){
+                int targetDest = node.destNode;
+                int currentPath = minHeap.getPath(targetDest);
+                int targetDist = node.weight;
+                int candidatePath = nodePath + targetDist;
+
+                if(minHeap.contains(targetDest)
+                        && candidatePath < currentPath){
+                    minHeap.revisePath(targetDest, candidatePath);
+                }
+
+                node = node.next;
+            }
+        }
+
         return paths;
     }
 
@@ -107,8 +145,10 @@ public class Graph {
         }
     }
 
-    // TODO HEAP Binário
-    public Integer[] minimalPathsHeap(int starterNode){
-        return null;
+    public void printMinimalPathsHeap() {
+        Integer[] paths = minimalPathsHeap();
+        for(int i = 0; i < numNodes; i++){
+            System.out.println("d[" + i + "] = " + paths[i]);
+        }
     }
 }

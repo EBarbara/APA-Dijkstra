@@ -54,7 +54,10 @@ public class App {
         }
         if(Objects.nonNull(graph)){
             graph.printAdjacencyList();
+            System.out.println("BASIC--------------------------------");
             graph.printMinimalPathsBasic();
+            System.out.println("HEAP---------------------------------");
+            graph.printMinimalPathsHeap();
         }
     }
 }

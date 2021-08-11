@@ -1,10 +1,15 @@
 import unirio.apa.Graph;
+import unirio.apa.util.DijkstraData;
 import unirio.apa.util.FileManager;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -18,31 +23,42 @@ public class App {
     private static final String TEST_EXT = ".dat";
     private static final String MAIN_EXT = ".stp";
 
+    private static final String RESULTS_FILE = "output\\results.txt";
+    private static final String TIMES_FILE = "output\\times.csv";
+
     public static void main(String[] args) {
-        System.out.println("File,Nodes,Basic,Heap");
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+        LocalDateTime now = LocalDateTime.now();
 
         // Verifica se é um teste
         boolean testRun = Arrays.asList(args).contains(TEST);
 
         // Lista todos os arquivos na pasta INPUT
-        try(Stream<Path> walk = Files.walk(Paths.get(INPUT))){
+        try(
+                BufferedWriter resultWriter = new BufferedWriter(new FileWriter(RESULTS_FILE));
+                BufferedWriter timeWriter = new BufferedWriter(new FileWriter(TIMES_FILE));
+                Stream<Path> walk = Files.walk(Paths.get(INPUT))
+        ){
             List<String> files = walk.filter(Files::isRegularFile)
                     .map(Path::toString).collect(Collectors.toList());
+            resultWriter.write("Resultados gerados em " + dtf.format(now) + "\n");
+            timeWriter.write("File,Nodes,Basic,Heap\n");
             for(String filePath : files){
                 if(testRun){
                     if(!filePath.contains(TEST_PATTERN)){
                         continue;
                     }
                 }
-                //demoDijkstra(filePath);
-                runDijkstra(filePath);
+                runDijkstra(filePath, resultWriter, timeWriter);
             }
         }catch(IOException e){
             e.printStackTrace();
         }
     }
 
-    private static void runDijkstra(String filePath){
+    private static void runDijkstra(String filePath, BufferedWriter resultWriter, BufferedWriter timeWriter) throws IOException {
+        resultWriter.write(filePath + "\n");
+
         Graph graph;
         long basicTime = -1;
         long heapTime = -1;
@@ -57,32 +73,25 @@ public class App {
             return;
         }
         if(Objects.nonNull(graph)){
-            basicTime = graph.getElapsedBasic();
-            heapTime = graph.getElapsedHeap();
             nodes = graph.getNumNodes();
+
+            DijkstraData dijkstraBasic = graph.getMinimalPathsBasic();
+            basicTime = dijkstraBasic.getTime();
+            Integer[] basicPaths = dijkstraBasic.getPaths();
+            resultWriter.write("BASIC--------------------------------\n");
+            for(int i = 0; i < nodes; i++){
+                resultWriter.write("d[" + i + "] = " + basicPaths[i] + "\n");
+            }
+
+            DijkstraData dijkstraHeap = graph.getMinimalPathsHeap();
+            heapTime = dijkstraHeap.getTime();
+            Integer[] heapPaths = dijkstraHeap.getPaths();
+            resultWriter.write("HEAP---------------------------------\n");
+            for(int i = 0; i < nodes; i++){
+                resultWriter.write("d[" + i + "] = " + heapPaths[i] + "\n");
+            }
         }
         String filename = filePath.substring(filePath.lastIndexOf("\\")+1);
-        System.out.println(filename + "," + nodes + "," + basicTime + "," + heapTime);
-    }
-
-    private static void demoDijkstra(String filePath){
-        System.out.println(filePath);
-        Graph graph;
-
-        if(filePath.contains(TEST_EXT)){
-            graph = FileManager.loadTestFile(filePath);
-        }else if(filePath.contains(MAIN_EXT)) {
-            graph = FileManager.loadMainFile(filePath);
-        }else{
-            System.out.println("Tipo de arquivo não reconhecido");
-            return;
-        }
-        if(Objects.nonNull(graph)){
-            graph.printAdjacencyList();
-            System.out.println("BASIC--------------------------------");
-            graph.printMinimalPathsBasic();
-            System.out.println("HEAP---------------------------------");
-            graph.printMinimalPathsHeap();
-        }
+        timeWriter.write(filename + "," + nodes + "," + basicTime + "," + heapTime + "\n");
     }
 }

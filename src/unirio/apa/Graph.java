@@ -1,6 +1,7 @@
 package unirio.apa;
 
 import unirio.apa.MinHeap.NodeHeap;
+import unirio.apa.util.DijkstraData;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -146,31 +147,19 @@ public class Graph {
         return paths;
     }
 
-    public void printMinimalPathsBasic() {
+    public DijkstraData getMinimalPathsBasic() {
+        Instant start = Instant.now();
         Integer[] paths = minimalPathsBasic();
-        for(int i = 0; i < numNodes; i++){
-            System.out.println("d[" + i + "] = " + paths[i]);
-        }
+        Instant finish = Instant.now();
+        long duration = Duration.between(start, finish).toMillis();
+        return new DijkstraData(paths, duration);
     }
 
-    public void printMinimalPathsHeap() {
+    public DijkstraData getMinimalPathsHeap() {
+        Instant start = Instant.now();
         Integer[] paths = minimalPathsHeap();
-        for(int i = 0; i < numNodes; i++){
-            System.out.println("d[" + i + "] = " + paths[i]);
-        }
-    }
-
-    public long getElapsedBasic() {
-        Instant start = Instant.now();
-        minimalPathsBasic();
         Instant finish = Instant.now();
-        return Duration.between(start, finish).toNanos();
-    }
-
-    public long getElapsedHeap() {
-        Instant start = Instant.now();
-        minimalPathsHeap();
-        Instant finish = Instant.now();
-        return Duration.between(start, finish).toNanos();
+        long duration = Duration.between(start, finish).toMillis();
+        return new DijkstraData(paths, duration);
     }
 }

@@ -42,7 +42,7 @@ public class App {
             List<String> files = walk.filter(Files::isRegularFile)
                     .map(Path::toString).collect(Collectors.toList());
             resultWriter.write("Resultados gerados em " + dtf.format(now) + "\n");
-            timeWriter.write("File,Nodes,Basic,Heap\n");
+            timeWriter.write("File,Nodes,Edges,Basic,Heap\n");
             for(String filePath : files){
                 if(testRun){
                     if(!filePath.contains(TEST_PATTERN)){
@@ -58,11 +58,13 @@ public class App {
 
     private static void runDijkstra(String filePath, BufferedWriter resultWriter, BufferedWriter timeWriter) throws IOException {
         resultWriter.write(filePath + "\n");
+        System.out.println("Working on " + filePath);
 
         Graph graph;
         long basicTime = -1;
         long heapTime = -1;
         int nodes = -1;
+        int edges = -1;
 
         if(filePath.contains(TEST_EXT)){
             graph = FileManager.loadTestFile(filePath);
@@ -74,6 +76,7 @@ public class App {
         }
         if(Objects.nonNull(graph)){
             nodes = graph.getNumNodes();
+            edges = graph.getNumEdges();
 
             DijkstraData dijkstraBasic = graph.getMinimalPathsBasic();
             basicTime = dijkstraBasic.getTime();
@@ -92,6 +95,6 @@ public class App {
             }
         }
         String filename = filePath.substring(filePath.lastIndexOf("\\")+1);
-        timeWriter.write(filename + "," + nodes + "," + basicTime + "," + heapTime + "\n");
+        timeWriter.write(filename + "," + nodes + "," + edges + "," + basicTime + "," + heapTime + "\n");
     }
 }

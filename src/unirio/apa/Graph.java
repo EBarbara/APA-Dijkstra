@@ -36,9 +36,8 @@ public class Graph {
         return numNodes;
     }
 
-    private static boolean hasFalse(boolean[] array){
-        for(boolean b : array) if(!b) return true;
-        return false;
+    public int getNumEdges() {
+        return numEdges;
     }
 
     public Graph(int numNodes, int numEdges){
@@ -82,10 +81,11 @@ public class Graph {
         paths[STARTER_NODE] = 0;
         explored[STARTER_NODE] = true;
 
-        // Enquanto houver nós não explorados
-        while(hasFalse(explored)){
+        // Loop externo roda num_node vezes
+        for (int v = 0; v < numNodes; v++){
             int minDist = Integer.MAX_VALUE;
             int nextNode = -1;
+            // Loop interno roda num_node vezes
             for(int i = STARTER_NODE; i < numNodes; i++){
                 if(explored[i]){
                     Node node = nodeLists[i];
@@ -115,6 +115,7 @@ public class Graph {
         // Inicializações
         final int STARTER_NODE = 0;
         Integer[] paths = new Integer[numNodes];
+        boolean[] explored = new boolean[numNodes];
 
         MinHeap minHeap = new MinHeap(numNodes);
         minHeap.insert(STARTER_NODE, 0);
@@ -124,10 +125,12 @@ public class Graph {
 
         while(!minHeap.isEmpty()){
             NodeHeap minNode = minHeap.remove();
+            int nodeNum = minNode.node;
             int nodePath = minNode.pathWeight;
-            paths[minNode.node] = nodePath;
+            explored[nodeNum] = true;
+            paths[nodeNum] = nodePath;
 
-            Node node = nodeLists[minNode.node];
+            Node node = nodeLists[nodeNum];
 
             while(node != null){
                 int targetDest = node.destNode;
@@ -135,8 +138,7 @@ public class Graph {
                 int targetDist = node.weight;
                 int candidatePath = nodePath + targetDist;
 
-                if(minHeap.contains(targetDest)
-                        && candidatePath < currentPath){
+                if(!explored[targetDest] && candidatePath < currentPath){
                     minHeap.revisePath(targetDest, candidatePath);
                 }
 
